@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "tsx src/server.ts"
+    "server": "tsx watch src/server.ts",
+    "knex": "tsx ./node_modules/knex/bin/cli.js --knexfile=knexfile.ts"
   },
   "keywords": [],
   "author": "",
