@@ -1,10 +1,8 @@
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
-import { knex } from "../database";
-import { randomUUID } from "crypto";
-import bcrypt from "bcrypt";
+import { createNewUser } from "../functions/createNewUser";
 
-export const createNewUser: FastifyPluginAsyncZod = async (app) => {
+export const createNewUserRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
     "/users",
     {
@@ -25,20 +23,7 @@ export const createNewUser: FastifyPluginAsyncZod = async (app) => {
     async (req, res) => {
       const { email, name, password, repeat_password } = req.body;
 
-      if (password !== repeat_password)
-        return res.status(400).send({ message: "The passwords not match." });
-
-      const salt = await bcrypt.genSalt(12);
-      const passwordHash = await bcrypt.hash(password, salt);
-
-      await knex("users").insert({
-        user_id: randomUUID(),
-        email,
-        name,
-        password: passwordHash,
-      });
-
-      return res.status(201).send();
+      await createNewUser({ email, name, password, repeat_password, res });
     }
   );
 };
