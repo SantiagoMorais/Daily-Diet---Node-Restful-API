@@ -25,8 +25,7 @@ describe("Users routes", () => {
         email: "test@gmail.com",
         name: "test test",
         password: "123456",
-        repeat_password: "123456",
-        user_id: randomUUID(),
+        repeatPassword: "123456",
       })
       .expect(201);
   });
@@ -38,8 +37,7 @@ describe("Users routes", () => {
         email: "test@gmail.com",
         name: "test test",
         password: "123456",
-        repeat_password: "123456",
-        user_id: randomUUID(),
+        repeatPassword: "123456",
       })
       .expect(201);
 
@@ -58,5 +56,39 @@ describe("Users routes", () => {
         password: "invalidPassword",
       })
       .expect(401);
+  });
+
+  it("should be able to register a new meal", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        email: "test2@gmail.com",
+        name: "test test",
+        password: "123456",
+        repeatPassword: "123456",
+      })
+      .expect(201);
+
+    const loginUserResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "test2@gmail.com",
+        password: "123456",
+      })
+      .expect(200);
+
+    const cookies = loginUserResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    await request(app.server)
+      .post("/meals")
+      .set("Cookie", cookies)
+      .send({
+        title: "snack",
+        description: "hamburger",
+        inTheDiet: false,
+      })
+      .expect(201);
   });
 });
