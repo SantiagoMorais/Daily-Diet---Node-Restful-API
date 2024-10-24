@@ -5,7 +5,7 @@ export const verifySessionId = (
   res: FastifyReply,
   done: DoneFuncWithErrOrRes
 ) => {
-  const sessionId = req.cookies.sessionId;
+  const sessionId = req.cookies.session_id;
 
   if (!sessionId) return res.status(401).send({ message: "Unauthorized" });
 

@@ -2,8 +2,9 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { verifySessionId } from "../middlewares/verifySessionId";
 import { verifyUserSessionId } from "../middlewares/verifyUserSessionId";
+import { registerNewMeal } from "../functions/registerNewMeal";
 
-export const registerNewMeal: FastifyPluginAsyncZod = async (app) => {
+export const registerNewMealRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
     "/meals",
     {
@@ -19,7 +20,9 @@ export const registerNewMeal: FastifyPluginAsyncZod = async (app) => {
     async (req, res) => {
       const { description, inTheDiet, title } = req.body;
 
-      verifyUserSessionId({ res, req });
+      await verifyUserSessionId({ res, req });
+
+      await registerNewMeal({ description, inTheDiet, title, req, res });
     }
   );
 };
