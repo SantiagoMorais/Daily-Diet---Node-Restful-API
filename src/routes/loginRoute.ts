@@ -1,5 +1,6 @@
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
+import { login } from "../functions/login";
 
 export const loginRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
@@ -14,6 +15,8 @@ export const loginRoute: FastifyPluginAsyncZod = async (app) => {
     },
     async (req, res) => {
       const { email, password } = req.body;
+
+      await login({ email, password, res, req });
     }
   );
 };
