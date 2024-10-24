@@ -49,7 +49,7 @@
 
 ## Requisitos da aplicação
 
-- [ ] Deve ser possível criar um usuário
+- [ X ] Deve ser possível criar um usuário
   - name
   - email
   - user_id
@@ -84,6 +84,12 @@
 - Rota: `"/users"`
 - Método: `POST`
 - Objetivo: Criar novo usuário
+
+### POST - Login
+
+- Rota: `"/login"`
+- Método: `POST`
+- Objetivo: Realizar o login do usuário para que possa cadastrar refeições
 
 ### POST - Criar nova refeição
 
