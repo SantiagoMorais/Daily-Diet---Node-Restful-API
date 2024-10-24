@@ -55,7 +55,8 @@
   - user_id
   - password
   - repeat_password
-- [ ] Deve ser possível identificar o usuário entre as requisições
+  - session_id
+- [ X ] Deve ser possível identificar o usuário entre as requisições
 - [ ] Deve ser possível registrar uma refeição feita, com as seguintes informações:
       _As refeições devem ser relacionadas a um usuário._
   - name
@@ -85,11 +86,45 @@
 - Método: `POST`
 - Objetivo: Criar novo usuário
 
+```ts
+// Criptografando a senha antes de adicioná-la ao banco.
+const salt = await bcrypt.genSalt(12);
+const passwordHash = await bcrypt.hash(password, salt);
+
+// O session_id por enquanto não é definido e só será durante a realização do login.
+await knex<IUser>("users").insert({
+  email,
+  name,
+  password: passwordHash,
+  user_id: randomUUID(),
+});
+```
+
 ### POST - Login
 
 - Rota: `"/login"`
 - Método: `POST`
 - Objetivo: Realizar o login do usuário para que possa cadastrar refeições
+
+Utilizado sistema de login para atenticar usuários.
+Atualizando o `session_id` para um `id` válido e o enviando para os `cookies` através do [@fastify/cookie](https://github.com/fastify/fastify-cookie).
+
+```ts
+let sessionId = req.cookies.session_id;
+
+if (!sessionId) {
+  sessionId = randomUUID();
+
+  res.cookie("session_id", sessionId, {
+    path: "/",
+    maxAge: 60 * 60 * 24, // 1 day - O maxAge define em segundos a duração do cookie.
+  });
+}
+
+await knex<IUser>("users").select().where("email", email).update({
+  session_id: sessionId,
+});
+```
 
 ### POST - Criar nova refeição
 
