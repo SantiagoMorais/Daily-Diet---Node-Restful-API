@@ -9,7 +9,7 @@ interface ICreateNewUser {
   email: string;
   name: string;
   password: string;
-  repeat_password: string;
+  repeatPassword: string;
 }
 
 export const createNewUser = async ({
@@ -17,7 +17,7 @@ export const createNewUser = async ({
   email,
   name,
   password,
-  repeat_password,
+  repeatPassword,
 }: ICreateNewUser) => {
   switch (true) {
     case !email:
@@ -28,11 +28,11 @@ export const createNewUser = async ({
         return res.status(400).send({message: "Please, fill in the name field at least your name and last name."})
     case !password:
       return res.status(400).send({ message: "Password field is required" });
-    case !repeat_password:
+    case !repeatPassword:
       return res
         .status(400)
         .send({ message: "The password confirmation field is required" });
-    case password !== repeat_password:
+    case password !== repeatPassword:
       return res.status(400).send({ message: "The passwords don't match" });
   }
 

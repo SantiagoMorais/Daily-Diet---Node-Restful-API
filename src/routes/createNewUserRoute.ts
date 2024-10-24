@@ -12,18 +12,18 @@ export const createNewUserRoute: FastifyPluginAsyncZod = async (app) => {
             name: z.string().min(2),
             email: z.string().email(),
             password: z.string().min(6).max(15),
-            repeat_password: z.string().min(6).max(15),
+            repeatPassword: z.string().min(6).max(15),
           })
-          .refine((data) => data.password === data.repeat_password, {
+          .refine((data) => data.password === data.repeatPassword, {
             message: "The passwords not match.",
-            path: ["repeat_password"],
+            path: ["repeatPassword"],
           }),
       },
     },
     async (req, res) => {
-      const { email, name, password, repeat_password } = req.body;
+      const { email, name, password, repeatPassword } = req.body;
 
-      await createNewUser({ email, name, password, repeat_password, res });
+      await createNewUser({ email, name, password, repeatPassword, res });
     }
   );
 };

@@ -11,6 +11,8 @@
 - [Funcionalidade](#funcionalidade)
 - [Rotas](#rotas)
   - [POST - Criar usuário](#post---criar-usuário)
+  - [POST - Login](#post---login)
+  - [POST - Criar nova refeição](#post---criar-nova-refeição)
   - [PUT - Editar os dados de uma refeição](#put---editar-os-dados-de-uma-refeição)
   - [DELETE - Deletar uma refeição](#delete---deletar-uma-refeição)
   - [GET - Listar refeições](#get---listar-refeições)
@@ -50,6 +52,7 @@
 ## Requisitos da aplicação
 
 - [ X ] Deve ser possível criar um usuário
+
   - name
   - email
   - user_id
@@ -57,9 +60,9 @@
   - repeat_password
   - session_id
 
-
 - [ X ] Deve ser possível identificar o usuário entre as requisições
-- [ ] Deve ser possível registrar uma refeição feita, com as seguintes informações: *As refeições devem ser relacionadas a um usuário.*
+- [ ] Deve ser possível registrar uma refeição feita, com as seguintes informações: _As refeições devem ser relacionadas a um usuário._
+
   - meal_id
   - user_id
   - title
@@ -73,6 +76,7 @@
 - [ ] Deve ser possível listar todas as refeições de um usuário
 - [ ] Deve ser possível visualizar uma única refeição
 - [ ] Deve ser possível recuperar as métricas de um usuário
+
   - Quantidade total de refeições registradas
   - Quantidade total de refeições dentro da dieta
   - Quantidade total de refeições fora da dieta
