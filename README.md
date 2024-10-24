@@ -56,15 +56,18 @@
   - password
   - repeat_password
   - session_id
+
+
 - [ X ] Deve ser possível identificar o usuário entre as requisições
-- [ ] Deve ser possível registrar uma refeição feita, com as seguintes informações:
-      _As refeições devem ser relacionadas a um usuário._
-  - name
-  - description
-  - created_at (Data e hora)
-  - in_the_diet (Está dentro ou não da dieta)
-  - updated_at
+- [ ] Deve ser possível registrar uma refeição feita, com as seguintes informações: *As refeições devem ser relacionadas a um usuário.*
   - meal_id
+  - user_id
+  - title
+  - description
+  - in_the_diet (Está dentro ou não da dieta)
+  - created_at (Data e hora)
+  - updated_at
+
 - [ ] Deve ser possível editar uma refeição, podendo alterar todos os dados acima
 - [ ] Deve ser possível apagar uma refeição
 - [ ] Deve ser possível listar todas as refeições de um usuário
@@ -74,6 +77,7 @@
   - Quantidade total de refeições dentro da dieta
   - Quantidade total de refeições fora da dieta
   - Melhor sequência de refeições dentro da dieta
+
 - [ ] O usuário só pode visualizar, editar e apagar as refeições o qual ele criou
 
 ## Funcionalidade
