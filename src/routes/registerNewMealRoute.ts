@@ -8,7 +8,7 @@ export const registerNewMealRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
     "/meals",
     {
-      preHandler: [verifySessionId, verifyUserSessionId],
+      preHandler: [verifySessionId],
       schema: {
         body: z.object({
           title: z.string().min(2).max(30),
@@ -19,6 +19,8 @@ export const registerNewMealRoute: FastifyPluginAsyncZod = async (app) => {
     },
     async (req, res) => {
       const { description, inTheDiet, title } = req.body;
+
+      await verifyUserSessionId({req, res})
 
       await registerNewMeal({ description, inTheDiet, title, req, res });
     }

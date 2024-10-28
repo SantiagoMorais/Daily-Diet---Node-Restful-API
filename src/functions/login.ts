@@ -34,11 +34,7 @@ export const login = async ({ email, password, res, req }: ILogin) => {
 
   let sessionId = req.cookies.session_id;
 
-  const userAlreadyLogged = await knex<IUser>("users")
-    .where({ session_id: sessionId })
-    .first();
-
-  if (!sessionId || userAlreadyLogged) {
+  if (!sessionId) {
     sessionId = randomUUID();
 
     res.cookie("session_id", sessionId, {
@@ -51,5 +47,5 @@ export const login = async ({ email, password, res, req }: ILogin) => {
     session_id: sessionId,
   });
 
-  res.status(200).send();
+  return res.status(200).send();
 };
