@@ -2,6 +2,7 @@ import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { app } from "../src/app";
 import request from "supertest";
 import { execSync } from "child_process";
+import { register } from "module";
 
 describe("Users routes", () => {
   beforeAll(async () => {
@@ -152,6 +153,82 @@ describe("Users routes", () => {
           title: "snack2",
           description: "salad sandwich",
           in_the_diet: 1,
+        }),
+      ])
+    );
+  });
+
+  it("should be able to edit a meal info", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        email: "test5@mail.com",
+        name: "test name",
+        password: "654321",
+        repeatPassword: "654321",
+      })
+      .expect(201);
+
+    const userLoginResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "test5@mail.com",
+        password: "654321",
+      })
+      .expect(200);
+
+    const cookies = userLoginResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    const registerMealResponse = await request(app.server)
+      .post("/meals")
+      .set("Cookie", cookies)
+      .send({
+        title: "dinner",
+        description: "rice and beans",
+        inTheDiet: true,
+      })
+      .expect(201);
+
+    const listMealsResponse = await request(app.server)
+      .get("/meals")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(listMealsResponse.body.meals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          title: "dinner",
+          description: "rice and beans",
+          in_the_diet: 1,
+        }),
+      ])
+    );
+
+    const mealId = await listMealsResponse.body.meals[0].meal_id;
+
+    await request(app.server)
+      .put(`/meal/${mealId}`)
+      .set("Cookie", cookies)
+      .send({
+        title: "lunch",
+        description: "meat and french fries",
+        inTheDiet: false,
+      })
+      .expect(204);
+
+    const listMealsUpdatedResponse = await request(app.server)
+      .get("/meals")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(listMealsUpdatedResponse.body.meals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          title: "lunch",
+          description: "meat and french fries",
+          in_the_diet: 0,
         }),
       ])
     );
