@@ -71,7 +71,7 @@
   - created_at (Data e hora)
   - updated_at
 
-- [ ] Deve ser possível listar todas as refeições de um usuário
+- [ X ] Deve ser possível listar todas as refeições de um usuário
 - [ X ] Deve ser possível editar uma refeição, podendo alterar todos os dados acima
 - [ ] Deve ser possível apagar uma refeição
 - [ ] Deve ser possível visualizar uma única refeição
@@ -142,7 +142,7 @@ await knex<IUser>("users").select().where("email", email).update({
 
 ### PUT - Editar os dados de uma refeição
 
-- Rota: `"/meal/:meal_id"`
+- Rota: `"/meals/:meal_id"`
 - Método: `PUT`
 - Objetivo: Editar os dados de uma refeição
 
