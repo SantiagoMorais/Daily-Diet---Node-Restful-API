@@ -22,16 +22,22 @@ export const editMeal = async ({
     description?: string;
     in_the_diet?: boolean;
   }
-  
+
   const updates: IUpdates = {};
-  
+
+  const meal = await knex<IMeal>("meals").where({ meal_id: mealId }).first();
+
+  if (!meal) return res.status(404).send({ message: "Meal not found" });
   if (!title && !description && inTheDiet === undefined)
     return res
       .status(400)
       .send({ message: "At least one field must be updated" });
   if (title) updates.title = title;
   if (description) updates.description = description;
-  if (inTheDiet === true || inTheDiet === false) updates.in_the_diet = inTheDiet;
+  if (inTheDiet === true || inTheDiet === false)
+    updates.in_the_diet = inTheDiet;
+
+  const mealOfUser =
 
   await knex<IMeal>("meals").where({ meal_id: mealId }).update(updates);
   return res.status(204).send();
