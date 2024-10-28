@@ -8,6 +8,7 @@ import { createNewUserRoute } from "./routes/createNewUserRoute";
 import { loginRoute } from "./routes/loginRoute";
 import cookie from "@fastify/cookie";
 import { registerNewMealRoute } from "./routes/registerNewMealRoute";
+import { editMealRoute } from "./routes/editMealRoute";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -19,3 +20,4 @@ app.register(cookie);
 app.register(createNewUserRoute);
 app.register(loginRoute);
 app.register(registerNewMealRoute);
+app.register(editMealRoute);
