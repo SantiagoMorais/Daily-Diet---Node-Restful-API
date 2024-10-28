@@ -61,7 +61,7 @@
   - session_id
 
 - [ X ] Deve ser possível identificar o usuário entre as requisições
-- [ ] Deve ser possível registrar uma refeição feita, com as seguintes informações: _As refeições devem ser relacionadas a um usuário._
+- [ X ] Deve ser possível registrar uma refeição feita, com as seguintes informações: _As refeições devem ser relacionadas a um usuário._
 
   - meal_id
   - user_id
