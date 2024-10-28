@@ -37,8 +37,8 @@ export const editMeal = async ({
   if (inTheDiet === true || inTheDiet === false)
     updates.in_the_diet = inTheDiet;
 
-  const mealOfUser =
+  const currentDate = new Date().toLocaleString("pt-BR");
 
-  await knex<IMeal>("meals").where({ meal_id: mealId }).update(updates);
+  await knex<IMeal>("meals").where({ meal_id: mealId }).update({updated_at: currentDate, ...updates});
   return res.status(204).send();
 };
