@@ -3,7 +3,7 @@ import { z } from "zod";
 import { editMeal } from "../functions/editMeal";
 import { verifySessionId } from "../middlewares/verifySessionId";
 import { verifyUserSessionId } from "../middlewares/verifyUserSessionId";
-import { verifyUserMealsPermission } from "../middlewares/verifyUserMeals";
+import { verifyUserMealsPermission } from "../middlewares/verifyUserMealsPermission";
 
 export const editMealRoute: FastifyPluginAsyncZod = async (app) => {
   app.put(

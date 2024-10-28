@@ -15,12 +15,12 @@ export const verifyUserMealsPermission = async ({
 }: IVerifyUserMeals) => {
   const sessionId = req.cookies.session_id;
 
-  const userLogged: IUser = await knex<IUser>("users")
+  const userLogged: { user_id: string } = await knex<IUser>("users")
     .where({
       session_id: sessionId,
     })
     .first()
-    .returning("user_id");
+    .select("user_id");
 
   const userCanEditMeal = await knex<IMeal>("meals")
     .where({
@@ -28,8 +28,6 @@ export const verifyUserMealsPermission = async ({
     })
     .andWhere({ user_id: userLogged.user_id })
     .first();
-
-  console.log(userCanEditMeal);
 
   if (!userCanEditMeal)
     return res.status(401).send({ message: "Unauthorized" });
