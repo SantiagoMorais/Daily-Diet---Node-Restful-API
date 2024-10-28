@@ -2,10 +2,15 @@ import { IUser } from "../@types";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { knex } from "../database";
 
-export const verifyUserSessionId = async (
-  req: FastifyRequest,
-  res: FastifyReply,
-) => {
+interface IVerifyUserSessionId {
+  req: FastifyRequest;
+  res: FastifyReply;
+}
+
+export const verifyUserSessionId = async ({
+  req,
+  res,
+}: IVerifyUserSessionId) => {
   const sessionId = req.cookies.session_id;
 
   const userLogged = await knex<IUser>("users")

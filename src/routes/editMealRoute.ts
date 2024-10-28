@@ -25,7 +25,7 @@ export const editMealRoute: FastifyPluginAsyncZod = async (app) => {
       const { title, description, inTheDiet } = req.body;
       const { meal_id } = req.params;
 
-      await verifyUserSessionId(req, res);
+      await verifyUserSessionId({req, res});
       await verifyUserMealsPermission({ mealId: meal_id, req, res });
 
       await editMeal({ description, inTheDiet, title, res, mealId: meal_id });
