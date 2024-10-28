@@ -181,7 +181,7 @@ describe("Users routes", () => {
 
     if (!cookies) return;
 
-    const registerMealResponse = await request(app.server)
+    await request(app.server)
       .post("/meals")
       .set("Cookie", cookies)
       .send({
@@ -232,5 +232,70 @@ describe("Users routes", () => {
         }),
       ])
     );
+  });
+
+  it("should be able to delete a meal", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        email: "test6@mail.com",
+        name: "test name",
+        password: "654321",
+        repeatPassword: "654321",
+      })
+      .expect(201);
+
+    const userLoginResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "test6@mail.com",
+        password: "654321",
+      })
+      .expect(200);
+
+    const cookies = userLoginResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    await request(app.server)
+      .post("/meals")
+      .set("Cookie", cookies)
+      .send({
+        title: "dinner",
+        description: "rice and beans",
+        inTheDiet: true,
+      })
+      .expect(201);
+
+    const listMealsResponse = await request(app.server)
+      .get("/meals")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(listMealsResponse.body.meals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          title: "dinner",
+          description: "rice and beans",
+          in_the_diet: 1,
+        }),
+      ])
+    );
+
+    const mealId = await listMealsResponse.body.meals[0].meal_id;
+
+    console.log(mealId);
+
+    await request(app.server)
+      .delete(`/meals/${mealId}`)
+      .set("Cookie", cookies)
+      .expect(204);
+
+    const listMealsUpdatedResponse = await request(app.server)
+      .get("/meals")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(listMealsUpdatedResponse.body.meals).toEqual([]);
   });
 });
