@@ -7,7 +7,7 @@ import { verifyUserMealsPermission } from "../middlewares/verifyUserMealsPermiss
 
 export const editMealRoute: FastifyPluginAsyncZod = async (app) => {
   app.put(
-    "/meal/:meal_id",
+    "/meal/:mealId",
     {
       preHandler: [verifySessionId],
       schema: {
@@ -17,18 +17,18 @@ export const editMealRoute: FastifyPluginAsyncZod = async (app) => {
           inTheDiet: z.boolean().optional(),
         }),
         params: z.object({
-          meal_id: z.string().uuid(),
+          mealId: z.string().uuid(),
         }),
       },
     },
     async (req, res) => {
       const { title, description, inTheDiet } = req.body;
-      const { meal_id } = req.params;
+      const { mealId } = req.params;
 
-      await verifyUserSessionId({req, res});
-      await verifyUserMealsPermission({ mealId: meal_id, req, res });
+      await verifyUserSessionId({ req, res });
+      await verifyUserMealsPermission({ mealId, req, res });
 
-      await editMeal({ description, inTheDiet, title, res, mealId: meal_id });
+      await editMeal({ description, inTheDiet, title, res, mealId });
     }
   );
 };

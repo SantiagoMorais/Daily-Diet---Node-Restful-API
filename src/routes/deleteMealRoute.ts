@@ -3,10 +3,11 @@ import { z } from "zod";
 import { verifySessionId } from "../middlewares/verifySessionId";
 import { verifyUserSessionId } from "../middlewares/verifyUserSessionId";
 import { verifyUserMealsPermission } from "../middlewares/verifyUserMealsPermission";
+import { deleteMeal } from "../functions/deleteMeal";
 
 export const deleteMealRoute: FastifyPluginAsyncZod = async (app) => {
   app.delete(
-    "/meals/:meal_id",
+    "/meals/:mealId",
     {
       preHandler: [verifySessionId],
       schema: {
@@ -18,9 +19,9 @@ export const deleteMealRoute: FastifyPluginAsyncZod = async (app) => {
     async (req, res) => {
       const { mealId } = req.params;
       await verifyUserSessionId({ req, res });
-      await verifyUserMealsPermission({ req, mealId, res });
+      await verifyUserMealsPermission({ req, mealId: mealId, res });
 
-      
+      await deleteMeal({ mealId, res });
     }
   );
 };

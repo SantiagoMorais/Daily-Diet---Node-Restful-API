@@ -10,6 +10,7 @@ import cookie from "@fastify/cookie";
 import { registerNewMealRoute } from "./routes/registerNewMealRoute";
 import { editMealRoute } from "./routes/editMealRoute";
 import { listMealsRoute } from "./routes/listMealsRoute";
+import { deleteMealRoute } from "./routes/deleteMealRoute";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -23,3 +24,4 @@ app.register(loginRoute);
 app.register(registerNewMealRoute);
 app.register(editMealRoute);
 app.register(listMealsRoute);
+app.register(deleteMealRoute);
