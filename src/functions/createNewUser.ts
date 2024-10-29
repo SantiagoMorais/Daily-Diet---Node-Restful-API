@@ -1,11 +1,9 @@
-import { FastifyReply } from "fastify";
 import { knex } from "../database";
-import { IUser } from "../@types";
+import { IReply, IUser } from "../@types";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 
-interface ICreateNewUser {
-  res: FastifyReply;
+interface ICreateNewUser extends IReply {
   email: string;
   name: string;
   password: string;
@@ -25,7 +23,12 @@ export const createNewUser = async ({
     case !name:
       return res.status(400).send({ message: "Name field is required" });
     case !name.includes(" "):
-        return res.status(400).send({message: "Please, fill in the name field at least your name and last name."})
+      return res
+        .status(400)
+        .send({
+          message:
+            "Please, fill in the name field at least your name and last name.",
+        });
     case !password:
       return res.status(400).send({ message: "Password field is required" });
     case !repeatPassword:

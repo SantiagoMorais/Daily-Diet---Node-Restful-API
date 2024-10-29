@@ -18,7 +18,12 @@ export interface IMeal {
   updated_at: string | null;
 }
 
-export interface IRequestAndReply {
-  req: FastifyRequest;
-  res: FastifyReply;
+export interface IReply {
+  res: FastifyReply
 }
+
+export interface IRequest {
+  req: FastifyRequest
+}
+
+export interface IRequestAndReply extends IReply, IRequest {}

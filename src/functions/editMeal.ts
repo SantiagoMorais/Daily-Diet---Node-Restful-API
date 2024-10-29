@@ -1,9 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import { knex } from "../database";
-import { IMeal } from "../@types";
+import { IMeal, IReply } from "../@types";
 
-interface IEditMeal {
-  res: FastifyReply;
+interface IEditMeal extends IReply {
   title?: string;
   description?: string;
   inTheDiet?: boolean;
@@ -39,6 +37,8 @@ export const editMeal = async ({
 
   const currentDate = new Date().toLocaleString("pt-BR");
 
-  await knex<IMeal>("meals").where({ meal_id: mealId }).update({updated_at: currentDate, ...updates});
+  await knex<IMeal>("meals")
+    .where({ meal_id: mealId })
+    .update({ updated_at: currentDate, ...updates });
   return res.status(204).send();
 };

@@ -1,9 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import { knex } from "../database";
-import { IMeal } from "../@types";
+import { IMeal, IReply } from "../@types";
 
-interface IDeleteMeal {
-  res: FastifyReply;
+interface IDeleteMeal extends IReply {
   mealId: string;
 }
 
