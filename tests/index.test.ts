@@ -298,4 +298,58 @@ describe("Users routes", () => {
 
     expect(listMealsUpdatedResponse.body.meals).toEqual([]);
   });
+
+  it("should be able to get just one meal by its id", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        email: "test7@mail.com",
+        name: "name lastname",
+        password: "123456",
+        repeatPassword: "123456",
+      })
+      .expect(201);
+
+    const userLoginResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "test7@mail.com",
+        password: "123456",
+      })
+      .expect(200);
+
+    const cookies = userLoginResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    await request(app.server)
+      .post("/meals")
+      .set("Cookie", cookies)
+      .send({
+        title: "lunch1",
+        description: "salad",
+        inTheDiet: true,
+      })
+      .expect(201);
+
+    const mealRegisterResponse = await request(app.server)
+      .get("/meals")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    const mealId = mealRegisterResponse.body.meals[0].meal_id;
+
+    const getMealResponse = await request(app.server)
+      .get(`/meals/${mealId}`)
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(getMealResponse.body.meal).toEqual(
+      expect.objectContaining({
+        title: "lunch1",
+        description: "salad",
+        in_the_diet: true,
+      })
+    );
+  });
 });
