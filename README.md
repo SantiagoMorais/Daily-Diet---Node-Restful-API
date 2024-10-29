@@ -73,7 +73,7 @@
 
 - [ X ] Deve ser possível listar todas as refeições de um usuário
 - [ X ] Deve ser possível editar uma refeição, podendo alterar todos os dados acima
-- [ ] Deve ser possível apagar uma refeição
+- [ X ] Deve ser possível apagar uma refeição
 - [ ] Deve ser possível visualizar uma única refeição
 - [ ] Deve ser possível recuperar as métricas de um usuário
 
@@ -148,7 +148,7 @@ await knex<IUser>("users").select().where("email", email).update({
 
 ### DELETE - Deletar uma refeição
 
-- Rota: `"/meal/:meal_id"`
+- Rota: `"/meals/:meal_id"`
 - Método: `DELETE`
 - Objetivo: Deletar uma refeição
 
@@ -160,7 +160,7 @@ await knex<IUser>("users").select().where("email", email).update({
 
 ### GET - Visualizar uma refeição
 
-- Rota: `"/meal/meal_id"`
+- Rota: `"/meals/meal_id"`
 - Método: `GET`
 - Objetivo: Listar uma refeição específica de um usuário pelo id
 
