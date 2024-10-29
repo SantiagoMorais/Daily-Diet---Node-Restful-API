@@ -176,6 +176,11 @@ await knex<IUser>("users").select().where("email", email).update({
 
 ## Como rodar o projeto
 
+- Instalar as dependências `npm install`
+- Criar o arquivo `.env` e `.env.test` caso queira realizar os testes `e2e` da aplicação. Configure as variáveis ambiente como demonstra o arquivo `.env.example` e `.env.test.example`.
+- Executar as migrations `npm run knex migrate:latest`
+- Executar o servidor `npm run server`
+
 ## Autor
 
 - GitHub - [Felipe Santiago Morais](https://github.com/SantiagoMorais)
