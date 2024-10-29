@@ -7,14 +7,7 @@ interface IGetMeal extends IReply {
 
 export const getMeal = async ({ res, mealId }: IGetMeal) => {
   const validMeal = await knex<IMeal>("meals")
-    .select(
-      "meal_id",
-      "title",
-      "description",
-      "in_the_diet",
-      "created_at",
-      "updated_at"
-    )
+    .select()
     .where({
       meal_id: mealId,
     })
@@ -22,5 +15,10 @@ export const getMeal = async ({ res, mealId }: IGetMeal) => {
 
   if (!validMeal) return res.status(404).send({ message: "Meal not found" });
 
-  return res.status(200).send({ meal: validMeal });
+  const { user_id, ...rest }: IMeal = validMeal; // removing user_id
+  const meal = {...rest, in_the_diet: 1 ? true : false} // changing the return of in_the_diet to true or false instead of 1 or 0
+
+  return res
+    .status(200)
+    .send({ meal });
 };

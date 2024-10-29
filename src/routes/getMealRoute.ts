@@ -7,7 +7,7 @@ import { getMeal } from "../functions/getMeal";
 
 export const getMealRoute: FastifyPluginAsyncZod = async (app) => {
   app.get(
-    "/meals/meal_id",
+    "/meals/:meal_id",
     {
       preHandler: [verifySessionId],
       schema: {
