@@ -352,4 +352,62 @@ describe("Users routes", () => {
       })
     );
   });
+
+  it("should be able to get the user summary", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        email: "testSummaryRoute@mail.com",
+        name: "name lastname",
+        password: "654321",
+        repeatPassword: "654321",
+      })
+      .expect(201);
+
+    const userLoginResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "testSummaryRoute@mail.com",
+        password: "654321",
+      })
+      .expect(200);
+
+    const cookies = userLoginResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    for (let i = 0; i < 3; i++) {
+      await request(app.server)
+        .post("/meals")
+        .set("Cookie", cookies)
+        .send({
+          inTheDiet: true,
+          title: "dinner",
+          description: "salad",
+        })
+        .expect(201);
+    } // simulating a best sequency of 3 meals in the diet
+
+    await request(app.server)
+      .post("/meals")
+      .set("Cookie", cookies)
+      .send({
+        inTheDiet: false,
+        title: "snack",
+        description: "sandwich",
+      })
+      .expect(201); // simulating a meal out of  the diet
+
+    const summaryResponse = await request(app.server)
+      .get("/summary")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(summaryResponse.body.summary).toEqual({
+      mealsRegistered: 4,
+      mealsInTheDiet: 3,
+      mealsOutTheDiet: 1,
+      bestDietSequency: 3,
+    });
+  });
 });
