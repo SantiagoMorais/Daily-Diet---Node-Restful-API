@@ -1,14 +1,11 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import { knex } from "../database";
-import { IMeal, IUser } from "../@types";
+import { IMeal, IRequestAndReply, IUser } from "../@types";
 import { randomUUID } from "crypto";
 
-interface IRegisterNewMeal {
+interface IRegisterNewMeal extends IRequestAndReply {
   title: string;
   description: string;
   inTheDiet: boolean;
-  req: FastifyRequest;
-  res: FastifyReply;
 }
 
 export const registerNewMeal = async ({

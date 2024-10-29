@@ -1,12 +1,9 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import { knex } from "../database";
-import { IUser } from "../@types";
+import { IRequestAndReply, IUser } from "../@types";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 
-interface ILogin {
-  res: FastifyReply;
-  req: FastifyRequest;
+interface ILogin extends IRequestAndReply {
   email: string;
   password: string;
 }

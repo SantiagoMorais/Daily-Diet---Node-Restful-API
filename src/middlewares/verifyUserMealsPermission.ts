@@ -1,10 +1,7 @@
-import { IMeal, IUser } from "../@types";
-import { FastifyReply, FastifyRequest } from "fastify";
+import { IMeal, IRequestAndReply, IUser } from "../@types";
 import { knex } from "../database";
 
-interface IVerifyUserMeals {
-  req: FastifyRequest;
-  res: FastifyReply;
+interface IVerifyUserMeals extends IRequestAndReply {
   mealId: string;
 }
 

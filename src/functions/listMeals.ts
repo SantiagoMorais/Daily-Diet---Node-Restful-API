@@ -1,13 +1,7 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { IMeal, IUser } from "../@types";
+import { IMeal, IRequestAndReply, IUser } from "../@types";
 import { knex } from "../database";
 
-interface IListMeals {
-  req: FastifyRequest;
-  res: FastifyReply;
-}
-
-export const listMeals = async ({ req, res }: IListMeals) => {
+export const listMeals = async ({ req, res }: IRequestAndReply) => {
   const sessionId = req.cookies.session_id;
 
   const userLogged: IUser = await knex<IUser>("users")
