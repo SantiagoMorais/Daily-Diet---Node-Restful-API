@@ -30,10 +30,10 @@ export const userSummary = async ({ req, res }: IRequestAndReply) => {
 
     mealsData.map((meal) => {
       if (meal.in_the_diet) {
-        currentSequency++;
-        if (currentSequency > bestSequency) bestSequency = currentSequency;
+        currentSequency++; // when the current meal is in the diet the current sequency increases
+        if (currentSequency > bestSequency) bestSequency = currentSequency; // if the best sequency is smaller than the current one, update it
       } else if (!meal.in_the_diet) {
-        currentSequency = 0;
+        currentSequency = 0; // if the current meal is out the diet, reset the current sequency
       }
     });
     return bestSequency;
