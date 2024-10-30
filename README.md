@@ -37,6 +37,8 @@
 
 - [@fastify/cookie](https://github.com/fastify/fastify-cookie): Um plugin para o Fastify que adiciona suporte para ler e definir cookies.
 
+- [pg](https://node-postgres.com): Driver do banco de dados do PostgreSQL.
+
 ### Dependências de desenvolvimento
 
 - [ESLint](https://eslint.org/): Ferramenta para análise de código, responsável por identificar erros e inconsistências, como variáveis não utilizadas ou não declaradas.
@@ -48,6 +50,8 @@
 - [tsx](https://tsx.is): TSX significa _Typescript Execute_, servindo como um executor node para rodar código Typescript.
 
 - [Supertest](https://www.npmjs.com/package/supertest): A motivação com este módulo é fornecer uma abstração de alto nível para testar HTTP, ao mesmo tempo que permite acessar a API de nível inferior fornecida pelo `superagent`. Ou seja, testar o servidor sem precisar rodá-lo em uma porta específica, evitando conflitos.
+
+- [tsup](https://tsup.egoist.dev): Ferramenta para otimizar projetos TypeScript, permitindo realizar o build (converter TS em JS) de forma eficiente. Além disso, assim como Vitest e TSX, ele utiliza o **esbuild**, que acelera processos e facilita o desenvolvimento com TypeScript de maneira moderna.
 
 ## Requisitos da aplicação
 
