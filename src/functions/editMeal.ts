@@ -40,5 +40,6 @@ export const editMeal = async ({
   await knex<IMeal>("meals")
     .where({ meal_id: mealId })
     .update({ updated_at: currentDate, ...updates });
+    
   return res.status(204).send();
 };

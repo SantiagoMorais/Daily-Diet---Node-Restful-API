@@ -12,7 +12,7 @@
 - [Rotas](#rotas)
   - [POST - Criar usuário](#post---criar-usuário)
   - [POST - Login](#post---login)
-  - [POST - Criar nova refeição](#post---criar-nova-refeição)
+  - [POST - Registrar nova refeição](#post---registrar-nova-refeição)
   - [PUT - Editar os dados de uma refeição](#put---editar-os-dados-de-uma-refeição)
   - [DELETE - Deletar uma refeição](#delete---deletar-uma-refeição)
   - [GET - Listar refeições](#get---listar-refeições)
@@ -84,8 +84,6 @@
 
 - [ X ] O usuário só pode visualizar, editar e apagar as refeições o qual ele criou
 
-## Funcionalidade
-
 ## Rotas
 
 ### POST - Criar usuário
@@ -134,11 +132,51 @@ await knex<IUser>("users").select().where("email", email).update({
 });
 ```
 
-### POST - Criar nova refeição
+### POST - Registrar nova refeição
 
 - Rota: `"/meals"`
 - Método: `POST`
 - Objetivo: Criar nova refeição feita
+
+A partir daqui todas as rotas verificam a presença da `session_id` nos cookies para permitir que o usuário crie, delete ou edite informações.
+
+Middleware para verificação da existência de um `session_id`:
+
+```ts
+  const sessionId = req.cookies.session_id;
+
+  if (!sessionId) return res.status(401).send({ message: "Unauthorized" });
+
+  done();
+};
+```
+
+Função que avalia se o `session_id` atual nos cookies bate com o registrado nos dados do usuário no banco.
+
+```ts
+const sessionId = req.cookies.session_id;
+
+const userLogged = await knex<IUser>("users")
+  .where({
+    session_id: sessionId,
+  })
+  .first();
+
+if (!userLogged) return res.status(401).send({ message: "Unauthorized" });
+```
+
+Dando tudo correto, o usuário é registrado no banco de dados:
+
+```ts
+await knex<IMeal>("meals").insert({
+  user_id: user?.user_id,
+  meal_id: randomUUID(),
+  title,
+  description,
+  in_the_diet: inTheDiet,
+  created_at: currentDate,
+});
+```
 
 ### PUT - Editar os dados de uma refeição
 
@@ -146,11 +184,44 @@ await knex<IUser>("users").select().where("email", email).update({
 - Método: `PUT`
 - Objetivo: Editar os dados de uma refeição
 
+Para que o usuário tenha permissão para alterar um dado, precisamos verificar se a refeição registrada possui o id do usuário logado. Dessa forma evitamos que outros usuários editem dados que não são seus.
+
+```ts
+const userCanEditMeal = await knex<IMeal>("meals")
+  .where({
+    meal_id: mealId,
+  })
+  .andWhere({ user_id: userLogged.user_id })
+  .first();
+
+if (!userCanEditMeal) return res.status(401).send({ message: "Unauthorized" });
+```
+
+As permissões sendo totalmente autorizadas, o usuário pode atualizar os dados e o campo `updated_at` é atualizado para a data atual:
+
+```ts
+const currentDate = new Date().toLocaleString("pt-BR");
+
+await knex<IMeal>("meals")
+  .where({ meal_id: mealId })
+  .update({ updated_at: currentDate, ...updates });
+```
+
 ### DELETE - Deletar uma refeição
 
 - Rota: `"/meals/:meal_id"`
 - Método: `DELETE`
 - Objetivo: Deletar uma refeição
+
+Após todas as verificações demonstradas anteriormente e o usuário tendo permissão de deletar uma refeição, ela é removida do banco de dados, com uma requisição simples ao banco de dados:
+
+```ts
+export const deleteMeal = async ({ res, mealId }: IDeleteMeal) => {
+  await knex<IMeal>("meals").where({ meal_id: mealId }).delete();
+
+  return res.status(204).send();
+};
+```
 
 ### GET - Listar refeições
 
@@ -158,11 +229,33 @@ await knex<IUser>("users").select().where("email", email).update({
 - Método: `GET`
 - Objetivo: Listar todas as refeições de um usuário
 
+```ts
+const meals = await knex<IMeal>("meals")
+  .where({ user_id: userLogged.user_id })
+  .select(
+    "title",
+    "description",
+    "in_the_diet",
+    "created_at",
+    "updated_at",
+    "meal_id"
+  );
+```
+
 ### GET - Visualizar uma refeição
 
 - Rota: `"/meals/meal_id"`
 - Método: `GET`
 - Objetivo: Listar uma refeição específica de um usuário pelo id
+
+```ts
+const { user_id, ...rest }: IMeal = validMeal; // removing user_id
+const meal = { ...rest, in_the_diet: 1 ? true : false }; // changing the return of in_the_diet to true or false instead of 1 or 0
+
+return res.status(200).send({ meal });
+```
+
+O banco de dados registra dados como `true` ou `false` como 1 e 0, respectivamente. Assim só foi necessário mudar isso antes de ser enviado como resposta ao Frontend.
 
 ### GET - User Summary
 
@@ -173,6 +266,66 @@ await knex<IUser>("users").select().where("email", email).update({
   - Quantidade total de refeições dentro da dieta
   - Quantidade total de refeições fora da dieta
   - Melhor sequência de refeições dentro da dieta
+
+Essa última rota exigiu um pouco mais de lógica.
+
+- **Quantidade total de refeições dentro e fora da dieta**: As refeições nos retornam a informação `in_the_diet` que pode ser `true` ou `false`. Assim só precisamos utilizar o método `filter` para verificar quais estão dentro ou fora da dieta.
+
+```ts
+const { user_id }: IUser = user;
+
+const mealsData = await knex<IMeal>("meals").select().where({
+  user_id,
+});
+
+const mealsInTheDiet = mealsData.filter((meal) => meal.in_the_diet).length;
+const mealsOutTheDiet = mealsData.filter((meal) => !meal.in_the_diet).length;
+```
+
+- **Melhor sequência de refeições dentro da dieta**: Aqui precisamos avaliar quantas refeições dentro da dieta o usuário teve em sequência. Utilizando o método `map()` conseguimos percorrer todas as refeições na ordem de registro ao banco de dados. Assim, foi utilizado esta função para registrar a sequência:
+
+```ts
+const bestDietSequency = (): number => {
+  let bestSequency = 0; // A melhor sequência
+  let currentSequency = 0; // A sequência atual percorrida pelo método map
+
+  mealsData.map((meal) => {
+    if (meal.in_the_diet) {
+      currentSequency++; // Quando a refeição atual está dentro da dieta, a sequência atual aumenta
+      if (currentSequency > bestSequency) bestSequency = currentSequency; // Se a melhor sequência é menor que a atual, a melhor é atualizada
+    } else if (!meal.in_the_diet) {
+      currentSequency = 0; // Se a refeição atual está fora da dieta, a sequência atual é resetada e reinicia do zero.
+    }
+  });
+  return bestSequency; // Após percorrermos por todas as refeições do usuário, é retornado a melhor sequência.
+};
+```
+
+```json
+{
+  "summary": {
+    "mealsRegistered": 3,
+    "mealsInTheDiet": 2,
+    "mealsOutTheDiet": 1,
+    "bestDietSequency": 2
+  }
+}
+```
+
+- **Quantidade total de refeições registradas**: Só precisamos coletar todas as refeições registradas com o id do usuário e coletar a `lenght`.
+
+Resultado:
+
+```ts
+const summary = {
+  mealsRegistered: mealsData.length,
+  mealsInTheDiet,
+  mealsOutTheDiet,
+  bestDietSequency: bestDietSequency(),
+};
+
+return res.status(200).send({ summary });
+```
 
 ## Como rodar o projeto
 
