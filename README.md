@@ -1,6 +1,6 @@
 # Daily Diet - Node Restful API
 
-![banner]()
+![banner](src/assets/imgs/banner.png)
 
 ## Sumário
 
