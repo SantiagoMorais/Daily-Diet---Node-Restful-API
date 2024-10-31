@@ -13,6 +13,7 @@ import { listMealsRoute } from "./routes/listMealsRoute";
 import { deleteMealRoute } from "./routes/deleteMealRoute";
 import { getMealRoute } from "./routes/getMealRoute";
 import { userSummaryRoute } from "./routes/userSummaryRoute";
+import { profileDataRoute } from "./routes/profileDataRoute";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -29,3 +30,4 @@ app.register(listMealsRoute);
 app.register(deleteMealRoute);
 app.register(getMealRoute);
 app.register(userSummaryRoute);
+app.register(profileDataRoute);
