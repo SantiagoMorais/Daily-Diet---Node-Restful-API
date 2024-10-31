@@ -58,6 +58,40 @@ describe("Users routes", () => {
       .expect(401);
   });
 
+  it.only("should be able to the user check your profile data", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        email: "test@mail.com",
+        name: "Jon Doe",
+        password: "123456",
+        repeatPassword: "123456",
+      })
+      .expect(201);
+
+    const userLoginResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "test@mail.com",
+        password: "123456",
+      })
+      .expect(200);
+
+    const cookies = userLoginResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    const userProfileResponse = await request(app.server)
+      .get("/users/profile")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(userProfileResponse.body.user).toEqual({
+      email: "test@mail.com",
+      name: "Jon Doe",
+    });
+  });
+
   it("should be able to register a new meal", async () => {
     await request(app.server)
       .post("/users")
