@@ -12,6 +12,7 @@
 - [Rotas](#rotas)
   - [POST - Criar usuário](#post---criar-usuário)
   - [POST - Login](#post---login)
+  - [GET - Visualizar os dados pessoais](#get---visualizar-os-dados-pessoais)
   - [POST - Registrar nova refeição](#post---registrar-nova-refeição)
   - [PUT - Editar os dados de uma refeição](#put---editar-os-dados-de-uma-refeição)
   - [DELETE - Deletar uma refeição](#delete---deletar-uma-refeição)
@@ -136,11 +137,11 @@ await knex<IUser>("users").select().where("email", email).update({
 });
 ```
 
-### POST - Registrar nova refeição
+### GET - Visualizar os dados pessoais
 
-- Rota: `"/meals"`
-- Método: `POST`
-- Objetivo: Criar nova refeição feita
+- Rota: `"/users/profile"`
+- Método: `GET`
+- Objetivo: Permitir ao usuário visualizar seu nome e email cadastrados
 
 A partir daqui todas as rotas verificam a presença da `session_id` nos cookies para permitir que o usuário crie, delete ou edite informações.
 
@@ -169,7 +170,28 @@ const userLogged = await knex<IUser>("users")
 if (!userLogged) return res.status(401).send({ message: "Unauthorized" });
 ```
 
-Dando tudo correto, o usuário é registrado no banco de dados:
+Dando tudo correto, o usuário pode visualizar os seus dados.
+
+```ts
+const sessionId = req.cookies.session_id;
+
+if (!sessionId) return res.status(401).send({ message: "Unauthorized!" });
+
+const userData = await knex<IUser>("users")
+  .select("email", "name")
+  .where({ session_id: sessionId })
+  .first();
+
+if (!userData) return res.status(404).send({ message: "User not found!" });
+
+return res.status(200).send({ user: userData });
+```
+
+### POST - Registrar nova refeição
+
+- Rota: `"/meals"`
+- Método: `POST`
+- Objetivo: Criar nova refeição feita
 
 ```ts
 await knex<IMeal>("meals").insert({
