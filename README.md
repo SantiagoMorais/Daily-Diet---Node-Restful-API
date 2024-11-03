@@ -40,6 +40,8 @@
 
 - [pg](https://node-postgres.com): Driver do banco de dados do PostgreSQL.
 
+- [@fastify/cors](https://github.com/fastify/fastify-cors): Plugin do Fastify que configura o CORS (Cross-Origin Resource Sharing), uma medida de segurança que limita o acesso ao backend, permitindo apenas frontends específicos.
+
 ### Dependências de desenvolvimento
 
 - [ESLint](https://eslint.org/): Ferramenta para análise de código, responsável por identificar erros e inconsistências, como variáveis não utilizadas ou não declaradas.
