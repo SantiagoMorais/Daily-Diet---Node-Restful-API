@@ -58,7 +58,7 @@ describe("Users routes", () => {
       .expect(401);
   });
 
-  it.only("should be able to the user check your profile data", async () => {
+  it("should be able to the user check your profile data", async () => {
     await request(app.server)
       .post("/users")
       .send({

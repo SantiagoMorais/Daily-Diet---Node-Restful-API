@@ -24,10 +24,10 @@ app.register(cookie);
 
 app.register(createNewUserRoute);
 app.register(loginRoute);
+app.register(profileDataRoute);
 app.register(registerNewMealRoute);
 app.register(editMealRoute);
 app.register(listMealsRoute);
 app.register(deleteMealRoute);
 app.register(getMealRoute);
 app.register(userSummaryRoute);
-app.register(profileDataRoute);
