@@ -14,7 +14,8 @@ import { deleteMealRoute } from "./routes/deleteMealRoute";
 import { getMealRoute } from "./routes/getMealRoute";
 import { userSummaryRoute } from "./routes/userSummaryRoute";
 import { profileDataRoute } from "./routes/profileDataRoute";
-import fastifyCors from "@fastify/cors"
+import fastifyCors from "@fastify/cors";
+import { checkAuth } from "./routes/checkAuth";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -24,8 +25,8 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(cookie);
 
 app.register(fastifyCors, {
-  origin: "*"
-})
+  origin: "*",
+});
 
 app.register(createNewUserRoute);
 app.register(loginRoute);
@@ -36,3 +37,4 @@ app.register(listMealsRoute);
 app.register(deleteMealRoute);
 app.register(getMealRoute);
 app.register(userSummaryRoute);
+app.register(checkAuth);

@@ -2,6 +2,7 @@ import { knex } from "../database";
 import { IRequestAndReply, IUser } from "../@types";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
+import { env } from "../env";
 
 interface ILogin extends IRequestAndReply {
   email: string;
@@ -37,6 +38,8 @@ export const login = async ({ email, password, res, req }: ILogin) => {
     res.cookie("session_id", sessionId, {
       path: "/",
       maxAge: 60 * 60 * 24, // 1 day
+      httpOnly: true,
+      secure: env.NODE_ENV === "production",
     });
   }
 
@@ -44,5 +47,5 @@ export const login = async ({ email, password, res, req }: ILogin) => {
     session_id: sessionId,
   });
 
-  return res.status(200).send();
+  return res.status(200).send({message: "Successfull login."});
 };
