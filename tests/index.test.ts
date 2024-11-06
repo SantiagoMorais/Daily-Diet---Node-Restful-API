@@ -477,4 +477,43 @@ describe("Users routes", () => {
       message: "Authenticated!",
     });
   });
+
+  it.only("should be able to logout from the application", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        name: "Jon Doe",
+        email: "test@mail.com",
+        password: "123456",
+        repeatPassword: "123456",
+      })
+      .expect(201);
+
+    const loginResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "test@mail.com",
+        password: "123456",
+      })
+      .expect(200);
+
+    const cookies = loginResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    const logoutResponse = await request(app.server)
+      .post("/logout")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    const newCookies = logoutResponse.get("Set-Cookie");
+
+    if (!newCookies) return;
+
+    // Testing if it's logged out in a private route
+    await request(app.server)
+      .get("/summary")
+      .set("Cookie", newCookies)
+      .expect(401);
+  });
 });
