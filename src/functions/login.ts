@@ -40,6 +40,7 @@ export const login = async ({ email, password, res, req }: ILogin) => {
       maxAge: 60 * 60 * 24, // 1 day
       httpOnly: true,
       secure: env.NODE_ENV === "production",
+      sameSite: 'strict'
     });
   }
 

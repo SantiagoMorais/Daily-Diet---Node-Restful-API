@@ -16,6 +16,7 @@ import { userSummaryRoute } from "./routes/userSummaryRoute";
 import { profileDataRoute } from "./routes/profileDataRoute";
 import fastifyCors from "@fastify/cors";
 import { checkAuth } from "./routes/checkAuth";
+import { env } from "./env";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -25,7 +26,8 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(cookie);
 
 app.register(fastifyCors, {
-  origin: "*",
+  origin: env.WEB_URL,
+  credentials: true,
 });
 
 app.register(createNewUserRoute);
