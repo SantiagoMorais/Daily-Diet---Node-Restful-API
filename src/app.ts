@@ -15,7 +15,7 @@ import { getMealRoute } from "./routes/getMealRoute";
 import { userSummaryRoute } from "./routes/userSummaryRoute";
 import { profileDataRoute } from "./routes/profileDataRoute";
 import fastifyCors from "@fastify/cors";
-import { checkAuth } from "./routes/checkAuth";
+import { checkAuthRoute } from "./routes/checkAuthRoute";
 import { env } from "./env";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>();
@@ -39,4 +39,4 @@ app.register(listMealsRoute);
 app.register(deleteMealRoute);
 app.register(getMealRoute);
 app.register(userSummaryRoute);
-app.register(checkAuth);
+app.register(checkAuthRoute);
