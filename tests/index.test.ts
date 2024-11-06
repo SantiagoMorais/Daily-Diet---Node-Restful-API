@@ -444,4 +444,37 @@ describe("Users routes", () => {
       bestDietSequency: 3,
     });
   });
+
+  it("should be able the user be authenticated", async () => {
+    await request(app.server)
+      .post("/users")
+      .send({
+        name: "Jon Doe",
+        email: "test@mail.com",
+        password: "123456",
+        repeatPassword: "123456",
+      })
+      .expect(201);
+
+    const loginResponse = await request(app.server)
+      .post("/login")
+      .send({
+        email: "test@mail.com",
+        password: "123456",
+      })
+      .expect(200);
+
+    const cookies = loginResponse.get("Set-Cookie");
+
+    if (!cookies) return;
+
+    const checkAuth = await request(app.server)
+      .get("/auth/status")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(checkAuth.body).toEqual({
+      message: "Authenticated!",
+    });
+  });
 });
