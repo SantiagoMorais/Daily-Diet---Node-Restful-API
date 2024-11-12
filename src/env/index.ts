@@ -10,6 +10,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   DATABASE_CLIENT: z.enum(["sqlite", "pg"]),
   WEB_URL: z.string(),
+  SECRET: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);
