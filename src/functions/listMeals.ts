@@ -1,4 +1,4 @@
-import { IMeal, IRequestAndReply, IUser } from "../@types";
+import { IDatabaseReturnMeal, IMeal, IRequestAndReply, IUser } from "../@types";
 import { knex } from "../database";
 
 export const listMeals = async ({ req, res }: IRequestAndReply) => {
@@ -11,7 +11,7 @@ export const listMeals = async ({ req, res }: IRequestAndReply) => {
     .first()
     .returning("user_id");
 
-  const meals = await knex<IMeal>("meals")
+  const meals = await knex<IDatabaseReturnMeal>("meals")
     .where({ user_id: userLogged.user_id })
     .select(
       "title",
@@ -22,5 +22,10 @@ export const listMeals = async ({ req, res }: IRequestAndReply) => {
       "meal_id"
     );
 
-  return res.status(200).send({ meals });
+  const formattedMeals = meals.map((meal) => ({
+    ...meal,
+    in_the_diet: meal.in_the_diet === 1 ? true : false,
+  }));  
+
+  return res.status(200).send({ meals: formattedMeals });
 };
