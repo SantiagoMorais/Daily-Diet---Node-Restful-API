@@ -19,19 +19,18 @@ interface IBaseMeal {
 
 export interface IMeal extends IBaseMeal {
   in_the_diet: boolean | null;
-
 }
 
 export interface IDatabaseReturnMeal extends IBaseMeal {
-  in_the_diet: number | null
+  in_the_diet: number | null;
 }
 
 export interface IReply {
-  res: FastifyReply
+  res: FastifyReply;
 }
 
 export interface IRequest {
-  req: FastifyRequest
+  req: FastifyRequest;
 }
 
 export interface IRequestAndReply extends IReply, IRequest {}

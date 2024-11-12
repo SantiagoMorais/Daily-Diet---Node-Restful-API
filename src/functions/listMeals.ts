@@ -20,12 +20,13 @@ export const listMeals = async ({ req, res }: IRequestAndReply) => {
       "created_at",
       "updated_at",
       "meal_id"
-    );
+    )
+    .orderBy("created_at", "desc");
 
   const formattedMeals = meals.map((meal) => ({
     ...meal,
     in_the_diet: meal.in_the_diet === 1 ? true : false,
-  }));  
+  }));
 
   return res.status(200).send({ meals: formattedMeals });
 };
