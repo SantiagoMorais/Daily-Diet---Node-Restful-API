@@ -3,6 +3,7 @@ import { IRequestAndReply, IUser } from "../@types";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { env } from "../env";
+import jwt from "jsonwebtoken";
 
 interface ILogin extends IRequestAndReply {
   email: string;
@@ -33,7 +34,13 @@ export const login = async ({ email, password, res, req }: ILogin) => {
   let sessionId = req.cookies.session_id;
 
   if (!sessionId) {
-    sessionId = randomUUID();
+    const secret = env.SECRET;
+    sessionId = jwt.sign(
+      {
+        id: user.user_id,
+      },
+      secret
+    );
 
     res.cookie("session_id", sessionId, {
       path: "/",
